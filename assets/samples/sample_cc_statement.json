@@ -1,0 +1,45 @@
+{
+  "account": {
+    "name": "Chase Sapphire",
+    "type": "credit_card",
+    "institution": "Chase",
+    "last_four": "4821"
+  },
+  "statement_period": {
+    "start": "2026-05-01",
+    "end": "2026-05-31"
+  },
+  "transactions": [
+    {
+      "date": "2026-05-02",
+      "description": "WHOLE FOODS MARKET",
+      "amount": -87.43,
+      "category": "Groceries",
+      "merchant": "Whole Foods",
+      "type": "debit"
+    },
+    {
+      "date": "2026-05-05",
+      "description": "NETFLIX.COM",
+      "amount": -15.99,
+      "category": "Entertainment",
+      "merchant": "Netflix",
+      "type": "debit"
+    },
+    {
+      "date": "2026-05-12",
+      "description": "SHELL OIL",
+      "amount": -52.10,
+      "category": "Transportation",
+      "merchant": "Shell",
+      "type": "debit"
+    },
+    {
+      "date": "2026-05-28",
+      "description": "PAYMENT - THANK YOU",
+      "amount": 500.00,
+      "category": "Payment",
+      "type": "credit"
+    }
+  ]
+}

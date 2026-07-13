@@ -1,0 +1,42 @@
+{
+  "account": {
+    "name": "Checking Account",
+    "type": "bank_account",
+    "institution": "Bank of America",
+    "last_four": "9012"
+  },
+  "statement_period": {
+    "start": "2026-05-01",
+    "end": "2026-05-31"
+  },
+  "transactions": [
+    {
+      "date": "2026-05-01",
+      "description": "DIRECT DEPOSIT - ACME CORP",
+      "amount": 3200.00,
+      "category": "Income",
+      "type": "credit"
+    },
+    {
+      "date": "2026-05-03",
+      "description": "RENT PAYMENT",
+      "amount": -1450.00,
+      "category": "Housing",
+      "type": "debit"
+    },
+    {
+      "date": "2026-05-08",
+      "description": "ELECTRIC COMPANY",
+      "amount": -124.56,
+      "category": "Utilities",
+      "type": "debit"
+    },
+    {
+      "date": "2026-05-15",
+      "description": "ATM WITHDRAWAL",
+      "amount": -200.00,
+      "category": "Cash",
+      "type": "debit"
+    }
+  ]
+}
