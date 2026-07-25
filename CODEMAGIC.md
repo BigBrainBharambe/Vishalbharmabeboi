@@ -116,7 +116,8 @@ Codemagic → **Team settings** → **codemagic.yaml settings** → **Code signi
 | Integration not found | API key name in Codemagic UI must be exactly `ExpenseTracker` |
 | No matching profile | Upload/fetch an App Store (or Ad Hoc) profile for `com.vishalbharambe.expensetracker` |
 | Certificate limit | Apple allows max 3 Distribution certs — revoke an unused one or upload an existing `.p12` |
-| Pod install fails | Ensure `ios/Podfile` is in the repo (it is) and CocoaPods is `default` in the workflow |
+| Pod / Podfile.lock sandbox error | This project uses Swift Package Manager. There should be **no** `ios/Podfile`. Re-run on latest `cursor/expense-tracker-a654` |
+| SPM / CocoaPods conflict | Delete any local `ios/Pods`, `ios/Podfile`, `ios/Podfile.lock` and push; Codemagic cleans these before build |
 | Bundle ID mismatch | Xcode project and Codemagic `bundle_identifier` must both be `com.vishalbharambe.expensetracker` |
 
 ## Docs

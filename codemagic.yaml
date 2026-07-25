@@ -1,4 +1,7 @@
 # Codemagic CI/CD — Expense Tracker (Flutter iOS)
+#
+# Uses Flutter's Swift Package Manager path (default on current stable).
+# Do not add a CocoaPods Podfile unless a plugin still requires it.
 
 workflows:
   # Step 1: verify the project compiles on Codemagic (no Apple signing required)
@@ -14,9 +17,17 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Install CocoaPods dependencies
+      - name: Clean leftover CocoaPods state
         script: |
-          find . -name "Podfile" -execdir pod install \;
+          # Current Flutter plugins use SwiftPM. Remove any stale CocoaPods
+          # sandbox so Xcode does not fail on Podfile.lock / Manifest.lock.
+          cd ios
+          rm -rf Pods Podfile.lock .symlinks
+          if [ -f Podfile ]; then
+            pod deintegrate || true
+            pod install --repo-update
+          fi
+          cd ..
       - name: Flutter analyze
         script: |
           flutter analyze --no-fatal-infos
@@ -58,9 +69,15 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Install CocoaPods dependencies
+      - name: Clean leftover CocoaPods state
         script: |
-          find . -name "Podfile" -execdir pod install \;
+          cd ios
+          rm -rf Pods Podfile.lock .symlinks
+          if [ -f Podfile ]; then
+            pod deintegrate || true
+            pod install --repo-update
+          fi
+          cd ..
       - name: Flutter analyze
         script: |
           flutter analyze --no-fatal-infos
@@ -119,9 +136,15 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
-      - name: Install CocoaPods dependencies
+      - name: Clean leftover CocoaPods state
         script: |
-          find . -name "Podfile" -execdir pod install \;
+          cd ios
+          rm -rf Pods Podfile.lock .symlinks
+          if [ -f Podfile ]; then
+            pod deintegrate || true
+            pod install --repo-update
+          fi
+          cd ..
       - name: Flutter build ipa
         script: |
           BUILD_NUMBER=${PROJECT_BUILD_NUMBER:-1}

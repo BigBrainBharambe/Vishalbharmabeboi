@@ -24,3 +24,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/samples/
+  # Codemagic / current Flutter stable use Swift Package Manager for iOS plugins.
+  config:
+    enable-swift-package-manager: true
