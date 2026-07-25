@@ -1,0 +1,141 @@
+# Codemagic CI/CD — Expense Tracker (Flutter iOS)
+
+workflows:
+  # Step 1: verify the project compiles on Codemagic (no Apple signing required)
+  ios-unsigned:
+    name: iOS Unsigned (debug)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+      - name: Flutter unit tests
+        script: |
+          flutter test
+        ignore_failure: false
+      - name: Build iOS debug without code signing
+        script: |
+          flutter build ios --debug --no-codesign
+    artifacts:
+      - build/ios/iphoneos/**/*.app
+      - /tmp/xcodebuild_logs/*.log
+
+  # Step 2: signed .ipa for App Store / TestFlight / download
+  # Requires Apple Developer Program + Codemagic signing setup (see CODEMAGIC.md)
+  ios-ipa:
+    name: iOS IPA (App Store signed)
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    # Must match the API key name you add in Codemagic → Team integrations → Developer Portal
+    integrations:
+      app_store_connect: ExpenseTracker
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.vishalbharambe.expensetracker
+      vars:
+        BUNDLE_ID: com.vishalbharambe.expensetracker
+        # Optional: set after creating the app in App Store Connect (numeric Apple ID)
+        # APP_STORE_APPLE_ID: "1234567890"
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+      - name: Flutter unit tests
+        script: |
+          flutter test
+        ignore_failure: true
+      - name: Flutter build ipa
+        script: |
+          # Prefer App Store Connect build number when APP_STORE_APPLE_ID is set
+          if [ -n "${APP_STORE_APPLE_ID:-}" ]; then
+            BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID") + 1))
+          else
+            BUILD_NUMBER=${PROJECT_BUILD_NUMBER:-1}
+          fi
+          flutter build ipa --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - vishal.bharambe4rfv@gmail.com
+        notify:
+          success: true
+          failure: true
+      # Uncomment after the app exists in App Store Connect and you want auto-upload:
+      # app_store_connect:
+      #   auth: integration
+      #   submit_to_testflight: true
+
+  # Optional: Ad Hoc .ipa for installing on registered devices without TestFlight
+  ios-ipa-adhoc:
+    name: iOS IPA (Ad Hoc)
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: ExpenseTracker
+    environment:
+      ios_signing:
+        distribution_type: ad_hoc
+        bundle_identifier: com.vishalbharambe.expensetracker
+      vars:
+        BUNDLE_ID: com.vishalbharambe.expensetracker
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Flutter build ipa
+        script: |
+          BUILD_NUMBER=${PROJECT_BUILD_NUMBER:-1}
+          flutter build ipa --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      email:
+        recipients:
+          - vishal.bharambe4rfv@gmail.com
+        notify:
+          success: true
+          failure: true

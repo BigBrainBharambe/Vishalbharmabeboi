@@ -73,6 +73,15 @@ flutter test
 - Home overview with income, expenses, and net balance
 - Track multiple imported statements in one session
 
+## Build an `.ipa` with Codemagic
+
+This repo includes `codemagic.yaml` for cloud iOS builds.
+
+- **Bundle ID:** `com.vishalbharambe.expensetracker`
+- **Workflows:** `ios-unsigned` → `ios-ipa` (signed `.ipa`)
+
+Full Apple Developer + signing steps: see **[CODEMAGIC.md](CODEMAGIC.md)**.
+
 ## Planned extensions
 
 - Local persistence (SQLite / Hive)
