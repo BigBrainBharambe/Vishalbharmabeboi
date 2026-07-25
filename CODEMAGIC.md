@@ -24,6 +24,18 @@ Start with **`ios-unsigned`**. When that is green, set up signing and run **`ios
 3. Project type: **Flutter App**.
 4. Open the app → scan branch `cursor/expense-tracker-a654` for `codemagic.yaml`.
 
+### Important: use the YAML workflows (not the Workflow Editor)
+
+If the build sidebar shows generic steps like **Building Android** / **Building iOS**, Codemagic is using the **Flutter Workflow Editor**, not `codemagic.yaml`.
+
+To use the IPA workflows in this repo:
+
+1. Open the app in Codemagic
+2. Switch to / scan **`codemagic.yaml`** on branch `cursor/expense-tracker-a654`
+3. Start a new build and pick workflow **`ios-unsigned`** or **`ios-ipa`**
+
+That skips Android entirely for iOS builds.
+
 ---
 
 ## 2. Apple Developer prerequisites
